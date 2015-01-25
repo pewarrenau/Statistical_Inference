@@ -1,0 +1,116 @@
+    ---
+title: "Statistical Inference Project - Part 1"
+author: "Peter Warren"
+date: "Saturday, January 24, 2015"
+output: word_document
+---
+
+
+#Overview
+In a few (2-3) sentences explain what is going to be reported on.
+
+E[X] = 1 / $\lamba$
+Var[X] = 1 / $\lamba$ ^2
+
+Let $X_i$ be the outcome for die $i$
+Then note that $\mu = E[X_i] = 3.5$
+$Var(X_i) = 2.92$
+
+
+
+#Simulations
+The  project is an investigation of the exponential distribution in R, with comparision to the Central Limit Theorem. The exponential distribution is invoked with the *rexp(n, lambda)* function, where *n* is the number of random draws from the distribtion and *lambda* is the rate parameter.
+
+Each iteration of the simulation will select 40 draws from the distribution and calculate the average. The simulation will be run 1000 time and we will be analysis the distribution of the average of 40 draws.
+
+Firtly, a seed value and all required libraries loaded.
+```{r}
+set.seed(1819)
+library(ggplot2)
+```
+
+Next, the variable required for the simulation are set. A *rexp* fuction is called from within a *for* loop, which producing a vector containing 1000 average. The vector is converted to a dataframe for later graphing.
+
+```{r}
+numSim <- 1000
+lambda <- 0.2
+sampleSize <- 40
+
+means = NULL
+for (i in 1 : numSim) {
+    means = c(means, mean(rexp(sampleSize, lambda)))
+    }    
+
+df <- data.frame(means = means)
+summary(df)
+```
+
+
+
+Illustrate via simulation and associated explanatory text the properties of the distribution of the mean of 40 exponentials.  You should
+1. Show the sample mean and compare it to the theoretical mean of the distribution.
+2. Show how variable the sample is (via variance) and compare it to the theoretical variance of the distribution.
+3. Show that the distribution is approximately normal.
+
+In point 3, focus on the difference between the distribution of a large collection of random exponentials and the distribution of a large collection of averages of 40 exponentials. 
+
+As a motivating example, compare the distribution of 1000 random uniforms
+
+
+
+
+#Sample Mean versus Theoretical Mean
+The therorectial mean of exponential distribution is 1/$lambda$ and the standard deviation is also 1/$lambda$. The sample mean is simply the average of the sample data. 
+
+```{r}
+mu <- 1 / lambda
+mu
+
+sampleMean <- mean(df$means)
+sampleMean
+
+abs(mu - sampleMean)
+```
+
+
+Set lambda = 0.2 for all of the simulations. You will investigate the distribution of averages of 40 exponentials. Note that you will need to do a thousand simulations.
+
+for the distribution of the averages of 40 exponentials is calculated 
+
+
+Include figures with titles. In the figures, highlight the means you are comparing. Include text that explains the figures and what is shown on them, and provides appropriate numbers.
+
+
+
+
+
+#Sample Variance versus Theoretical Variance:
+Include figures (output from R) with titles. Highlight the variances you are comparing. Include text that explains your understanding of the differences of the variances.
+
+
+The therorectial mean of exponential distribution is 1/$lambda$ and the standard deviation is also 1/$lambda$. The sample mean is simply the average of the sample data. 
+
+
+```{r}
+
+```
+
+
+
+#Distribution:
+Via figures and text, explain how one can tell the distribution is approximately normal.
+
+
+```{r}
+
+g <- ggplot(df, aes(x = means))
+g <- g + geom_histogram(alpha = 0.2, binwidth=0.2, aes(y = ..density..), fill="black", col="black")
+g <- g + geom_vline(aes(xintercept = mu), col="red", size=1)
+
+g <- g + stat_function(fun = dnorm, size = 0.75, col = "green", arg = list(mean = mu, sd = mu/sqrt(40)))
+g <- g + geom_density(col="blue", size=0.75, linetype="dashed")
+g
+
+
+
+```
